@@ -1,6 +1,6 @@
 {% extends 'layouts/base_admin.html' %}
 {% block title %}
-    <title>Admin Dashboard | HealthPulse</title>
+<title>Admin Dashboard | HealthPulse</title>
 {% endblock title %}
 {% block content %}
 
@@ -92,7 +92,8 @@
     <div class="col-8">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class='bx bx-line-chart' style="color: #ff574d;"></i> System Activity Overview</h3>
+                <h3 class="card-title"><i class='bx bx-line-chart' style="color: #ff574d;"></i> System Activity Overview
+                </h3>
             </div>
             <div class="card-body">
                 <div style="position: relative; height: 260px; width: 100%;">
@@ -104,12 +105,12 @@
     <div class="col-4">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class='bx bx-pie-chart-alt-2' style="color: #ff574d;"></i> Assessment Distribution</h3>
+                <h3 class="card-title"><i class='bx bx-pie-chart-alt-2' style="color: #ff574d;"></i> Assessment
+                    Distribution</h3>
             </div>
             <div class="card-body">
                 <div style="position: relative; height: 260px; width: 100%;">
-                    <canvas id="myChart1" 
-                        data-reports="{{ total_reports | default(1) }}" 
+                    <canvas id="myChart1" data-reports="{{ total_reports | default(1) }}"
                         data-users="{{ total_user | default(2) }}"></canvas>
                 </div>
             </div>
@@ -121,38 +122,47 @@
 <div class="card">
     <div class="card-header item-2">
         <h3 class="card-title"><i class='bx bxs-user-detail' style="color: #ff574d;"></i> Recent Registrations</h3>
-        <a href="{{ url_for('user_detail') }}" class="btn" style="padding: 6px 16px; font-size: 13px;">View All Users</a>
+        <a href="{{ url_for('user_detail') }}" class="btn" style="padding: 6px 16px; font-size: 13px;">View All
+            Users</a>
     </div>
     <div class="card-body" style="padding: 0; overflow-x: auto;">
         <table class="profile_table" style="margin: 0; border: none; border-radius: 0;">
             <thead>
                 <tr style="background: #f8fafc;">
                     <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">ID</th>
-                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">Name</th>
-                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">Email</th>
-                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">Role</th>
-                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b; text-align: right;">Action</th>
+                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">Name
+                    </th>
+                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">Email
+                    </th>
+                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">Role
+                    </th>
+                    <th
+                        style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b; text-align: right;">
+                        Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% if recent_users %}
-                    {% for u in recent_users %}
-                    <tr>
-                        <td style="padding: 14px 20px; font-weight: 600; color: #64748b;">#{{ u.id }}</td>
-                        <td style="padding: 14px 20px; font-weight: 600; color: #1e242b;">{{ u.name }}</td>
-                        <td style="padding: 14px 20px; color: #64748b;">{{ u.email }}</td>
-                        <td style="padding: 14px 20px;">
-                            <span class="badge {% if u.role == 'admin' %}danger{% else %}warning{% endif %}">{{ u.role|capitalize }}</span>
-                        </td>
-                        <td style="padding: 14px 20px; text-align: right;">
-                            <a href="{{ url_for('view_user', user_id=u.id) }}" class="btn btn-outline" style="padding: 5px 12px; font-size: 12px;">View</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                {% for u in recent_users %}
+                <tr>
+                    <td style="padding: 14px 20px; font-weight: 600; color: #64748b;">#{{ u.id }}</td>
+                    <td style="padding: 14px 20px; font-weight: 600; color: #1e242b;">{{ u.name }}</td>
+                    <td style="padding: 14px 20px; color: #64748b;">{{ u.email }}</td>
+                    <td style="padding: 14px 20px;">
+                        <span class="badge {% if u.role == 'admin' %}danger{% else %}warning{% endif %}">{{
+                            u.role|capitalize }}</span>
+                    </td>
+                    <td style="padding: 14px 20px; text-align: right;">
+                        <a href="{{ url_for('view_user', user_id=u.id) }}" class="btn btn-outline"
+                            style="padding: 5px 12px; font-size: 12px;">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
                 {% else %}
-                    <tr>
-                        <td colspan="5" style="padding: 32px 20px; text-align: center; color: #94a3b8;">No registered users yet.</td>
-                    </tr>
+                <tr>
+                    <td colspan="5" style="padding: 32px 20px; text-align: center; color: #94a3b8;">No registered users
+                        yet.</td>
+                </tr>
                 {% endif %}
             </tbody>
         </table>
@@ -161,72 +171,72 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    if (typeof Chart === "undefined") {
-        return;
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof Chart === "undefined") {
+            return;
+        }
 
-    var ctx = document.getElementById("myChart");
-    if (ctx) {
-        new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                datasets: [{
-                    label: "Assessments Run",
-                    data: [12, 19, 14, 25, 22, 30, 28],
-                    borderColor: "#ff574d",
-                    backgroundColor: "rgba(255, 87, 77, 0.08)",
-                    fill: true,
-                    tension: 0.35,
-                    borderWidth: 2.5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: "#f1f5f9" } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-    }
-
-    var ctx1 = document.getElementById("myChart1");
-    if (ctx1) {
-        var rawReports = parseInt(ctx1.getAttribute("data-reports"), 10) || 1;
-        var rawUsers = parseInt(ctx1.getAttribute("data-users"), 10) || 2;
-        var diabetesData = Math.max(1, rawReports);
-        var heartData = Math.max(1, Math.round(rawReports * 0.7));
-        var healthyData = Math.max(2, Math.round(rawUsers * 1.2));
-
-        new Chart(ctx1, {
-            type: "doughnut",
-            data: {
-                labels: ["Diabetes", "Heart Disease", "Healthy / Low Risk"],
-                datasets: [{
-                    data: [diabetesData, heartData, healthyData],
-                    backgroundColor: [
-                        "#ff574d",
-                        "#f59e0b",
-                        "#10b981"
-                    ],
-                    borderWidth: 0,
-                    hoverOffset: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: "bottom" }
+        var ctx = document.getElementById("myChart");
+        if (ctx) {
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                    datasets: [{
+                        label: "Assessments Run",
+                        data: [12, 19, 14, 25, 22, 30, 28],
+                        borderColor: "#ff574d",
+                        backgroundColor: "rgba(255, 87, 77, 0.08)",
+                        fill: true,
+                        tension: 0.35,
+                        borderWidth: 2.5
+                    }]
                 },
-                cutout: "72%"
-            }
-        });
-    }
-});
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: "#f1f5f9" } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        var ctx1 = document.getElementById("myChart1");
+        if (ctx1) {
+            var rawReports = parseInt(ctx1.getAttribute("data-reports"), 10) || 1;
+            var rawUsers = parseInt(ctx1.getAttribute("data-users"), 10) || 2;
+            var diabetesData = Math.max(1, rawReports);
+            var heartData = Math.max(1, Math.round(rawReports * 0.7));
+            var healthyData = Math.max(2, Math.round(rawUsers * 1.2));
+
+            new Chart(ctx1, {
+                type: "doughnut",
+                data: {
+                    labels: ["Diabetes", "Heart Disease", "Healthy / Low Risk"],
+                    datasets: [{
+                        data: [diabetesData, heartData, healthyData],
+                        backgroundColor: [
+                            "#ff574d",
+                            "#f59e0b",
+                            "#10b981"
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: "bottom" }
+                    },
+                    cutout: "72%"
+                }
+            });
+        }
+    });
 </script>
 {% endblock content %}

@@ -1,0 +1,158 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+<title>Route Settings | HealthPulse Admin</title>
+{% endblock title %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header item-2">
+        <div>
+            <h3 class="card-title">Route Controls & Settings</h3>
+            <p style="font-size: 13px; color: var(--adm-muted); margin-top: 4px;">Enable or disable app routes
+                dynamically in real time.</p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="{{ url_for('add_route') }}" class="btn">
+                <i class='bx bx-plus-circle'></i> Add Route
+            </a>
+            <div class="dropdown" data-dropdown="">
+                <button class="dropdown_btn btn btn-outline" data-dropdown-button="" style="cursor: pointer;">
+                    <i class='bx bxs-cog'></i> Manage <i class='bx bx-chevron-down'></i>
+                </button>
+                <div class="dropdown-menu">
+                    <a href="{{ url_for('add_route') }}" class="dropdown_item">
+                        <i class='bx bx-plus-circle'></i> Add New Route
+                    </a>
+                    <a href="{{ url_for('update_route') }}" class="dropdown_item">
+                        <i class='bx bxs-edit'></i> Rename Route
+                    </a>
+                    <a href="{{ url_for('delete_route') }}" class="dropdown_item logout">
+                        <i class='bx bx-trash'></i> Delete Route
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert_box" style="margin-bottom: 20px;">
+            {% for category,message in messages %}
+            <div class="alert alert-{{category}}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <table class="setting_table" id="myTable">
+            <thead>
+                <tr>
+                    <th style="width: 70px;">S.No</th>
+                    <th>Route Identifier</th>
+                    <th style="width: 160px;">Current Status</th>
+                    <th style="text-align: right; width: 140px;">Toggle Access</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in global_data %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        <code
+                            style="font-size: 13.5px; background: #f8fafc; padding: 4px 10px; border-radius: 8px; border: 1px solid #e2e8f0; color: var(--adm-ink); font-weight: 600;">
+                        /{{ data.route_name }}
+                    </code>
+                    </td>
+                    <td>
+                        {% if data.is_enabled %}
+                        <span class="badge warning"><i class='bx bxs-circle'
+                                style="font-size: 8px; margin-right: 5px;"></i> Active</span>
+                        {% else %}
+                        <span class="badge danger"><i class='bx bxs-circle'
+                                style="font-size: 8px; margin-right: 5px;"></i> Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        <form action="{{ url_for('enable_route', route_name=data.route_name) }}" method="post"
+                            id="form_{{ data.route_name }}">
+                            <input type="checkbox" name="enableCheckbox" class="toogle_btn" id="{{ data.route_name }}"
+                                {% if data.is_enabled %}checked{% endif %}
+                                onchange="CheckedToogle(`{{ data.route_name }}`)">
+
+                            <label for="{{ data.route_name }}" class="switch"></label>
+                            <button name="submit" hidden id="btn_{{ data.route_name }}" type="submit">submit</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+<script>
+    const dataTable = new simpleDatatables.DataTable("#myTable", {
+        searchable: true,
+        fixedHeight: false,
+        perPage: 5,
+        perPageSelect: [5, 10, 20, 50],
+        nextPrev: true,
+        prevText: "‹ Prev",
+        nextText: "Next ›",
+        labels: {
+            placeholder: "Search routes...",
+            perPage: "entries per page",
+            noRows: "No routes found",
+            info: "Showing {start} to {end} of {rows} entries",
+        }
+    });
+</script>
+
+<div class="model-wrapper" id="model">
+    <div class="model">
+        <div class="model_icon">
+            <i class='bx bx-help-circle' style="font-size: 52px; color: #ff574d;"></i>
+        </div>
+        <p class="question" style="font-size: 19px; font-weight: 700; color: var(--adm-ink); margin: 12px 0 8px;">
+            Confirm Route Status Change</p>
+        <p style="font-size: 13.5px; color: var(--adm-muted); margin-bottom: 24px;">Do you really want to toggle
+            accessibility for this route?</p>
+        <div class="model_footer">
+            <button id="no" onclick="noChange()" class="btn btn-outline"
+                style="padding: 10px 20px; font-weight: 600;">Cancel</button>
+            <button id="yes" onclick="changeIt()" class="btn" style="padding: 10px 24px; font-weight: 600;">Confirm
+                Change</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toogleModel(field_name) {
+        document.querySelector('#model').classList.add('active');
+        document.getElementById('yes').setAttribute('data-field', field_name);
+        document.getElementById('no').setAttribute('data-field', field_name);
+    }
+
+    function noChange() {
+        let field_name = document.getElementById('no').getAttribute('data-field');
+        document.querySelector('#model').classList.remove('active');
+        let checkbox = document.getElementById(field_name);
+        if (checkbox) checkbox.checked = !checkbox.checked;
+    }
+
+    function changeIt() {
+        let field_name = document.getElementById('yes').getAttribute('data-field');
+        document.querySelector('#model').classList.remove('active');
+        let btnId = `btn_${field_name}`;
+        let submitBtn = document.getElementById(btnId);
+        if (submitBtn) submitBtn.click();
+    }
+
+    function CheckedToogle(field_name) {
+        toogleModel(field_name);
+    }
+</script>
+{% endblock content %}

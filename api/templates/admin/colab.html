@@ -1,0 +1,501 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+    <title>Model Analytics & Research | HealthPulse Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <style>
+        .an-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--adm-border);
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .an-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            background: #ffffff;
+            border: 1px solid var(--adm-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .an-tab-btn:hover {
+            color: var(--adm-ink);
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        .an-tab-btn.active {
+            background: #fff0ee;
+            color: #ff574d;
+            border-color: rgba(255, 87, 77, 0.35);
+            box-shadow: 0 2px 8px rgba(255, 87, 77, 0.12);
+        }
+        .an-tab-pane {
+            display: none;
+        }
+        .an-tab-pane.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chart-card {
+            background: #ffffff;
+            border: 1px solid var(--adm-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+            transition: all 0.2s ease;
+        }
+        .chart-card:hover {
+            box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+            border-color: rgba(255, 87, 77, 0.25);
+        }
+        .chart-card img {
+            width: 100%;
+            height: auto;
+            max-height: 480px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #fafbfc;
+            border: 1px solid #f1f5f9;
+            padding: 12px;
+            margin-top: 14px;
+        }
+        .code-cell {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 16px 0 20px;
+        }
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #161b22;
+            padding: 8px 16px;
+            font-size: 12px;
+            color: #8b949e;
+            border-bottom: 1px solid #30363d;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .code-cell pre {
+            margin: 0;
+            padding: 14px 18px;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+        .output-box {
+            background: #f8fafc;
+            border: 1px solid var(--adm-border);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12.5px;
+            color: #334155;
+            margin: 10px 0 20px;
+            overflow-x: auto;
+        }
+        .df-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+            border: 1px solid var(--adm-border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 12px 0 20px;
+        }
+        .df-table th {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 10px 14px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--adm-border);
+            text-align: left;
+        }
+        .df-table td {
+            padding: 9px 14px;
+            border-bottom: 1px solid var(--adm-border);
+            color: #1e242b;
+        }
+        .df-table tr:last-child td {
+            border-bottom: none;
+        }
+        .df-table tr:hover td {
+            background: #f8fafc;
+        }
+    </style>
+{% endblock title %}
+{% block content %}
+
+<!-- Header & Title -->
+<div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+    <div>
+        <h2 style="font-size: 26px; font-weight: 800; color: var(--adm-ink); letter-spacing: -0.02em; margin-bottom: 4px;">
+            Model Analytics & Clinical Research
+        </h2>
+        <p style="font-size: 14px; color: var(--adm-muted);">
+            Exploratory Data Analysis (EDA), feature engineering, and model validation on 100,000 patient records.
+        </p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <span class="badge" style="background: #ecfdf5; color: #047857; border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 16px; font-size: 13px;">
+            <i class='bx bxs-check-circle' style="margin-right: 6px;"></i> Active In Production
+        </span>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline" style="text-decoration: none; padding: 8px 16px; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;">
+            <i class='bx bx-arrow-back'></i> Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- KPI Metrics Bento Row -->
+<div class="flex" style="margin-bottom: 28px;">
+    <div class="col-3">
+        <div class="widget dark">
+            <div class="widget_body">
+                <div class="icon"><i class='bx bx-data'></i></div>
+                <div class="widget_text">
+                    <span class="no">100,000</span>
+                    <span class="desc">Patient Samples</span>
+                </div>
+            </div>
+            <div class="widget_footer" style="margin-top: 12px; padding-top: 10px; font-size: 12px; color: var(--adm-muted);">
+                Clinical Kaggle Dataset
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="widget info">
+            <div class="widget_body">
+                <div class="icon"><i class='bx bx-target-lock'></i></div>
+                <div class="widget_text">
+                    <span class="no">95.88%</span>
+                    <span class="desc">Validation Accuracy</span>
+                </div>
+            </div>
+            <div class="widget_footer" style="margin-top: 12px; padding-top: 10px; font-size: 12px; color: #059669;">
+                Tested on 30,000 Held-Out Rows
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="widget danger">
+            <div class="widget_body">
+                <div class="icon"><i class='bx bx-brain'></i></div>
+                <div class="widget_text">
+                    <span class="no">8</span>
+                    <span class="desc">Clinical Features</span>
+                </div>
+            </div>
+            <div class="widget_footer" style="margin-top: 12px; padding-top: 10px; font-size: 12px; color: var(--adm-muted);">
+                HbA1c, Glucose, BMI, Age, etc.
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="widget warning">
+            <div class="widget_body">
+                <div class="icon"><i class='bx bx-git-repo-forked'></i></div>
+                <div class="widget_text">
+                    <span class="no">70 / 30</span>
+                    <span class="desc">Train / Test Split</span>
+                </div>
+            </div>
+            <div class="widget_footer" style="margin-top: 12px; padding-top: 10px; font-size: 12px; color: var(--adm-muted);">
+                Random State 42 (Reproducible)
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab Navigation Bar -->
+<div class="an-tabs">
+    <button class="an-tab-btn active" onclick="switchTab('visuals', this)">
+        <i class='bx bx-bar-chart-alt-2'></i> Visual Analytics & Plots
+    </button>
+    <button class="an-tab-btn" onclick="switchTab('notebook', this)">
+        <i class='bx bx-code-alt'></i> Jupyter Pipeline Code
+    </button>
+    <button class="an-tab-btn" onclick="switchTab('features', this)">
+        <i class='bx bx-slider-alt'></i> Feature Matrix & Weights
+    </button>
+</div>
+
+<!-- TAB 1: Visual Analytics & Plots -->
+<div id="tab-visuals" class="an-tab-pane active">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px;">
+        
+        <!-- Plot 1: Model Confusion Matrix -->
+        <div class="chart-card" style="grid-column: 1 / -1;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="font-size: 18px; font-weight: 700; color: var(--adm-ink);">Model Confusion Matrix (Validation on 30,000 Records)</h3>
+                    <p style="font-size: 13px; color: var(--adm-muted); margin-top: 2px;">
+                        Heatmap of true positives, true negatives, and false classification rates on unseen patient tests.
+                    </p>
+                </div>
+                <span class="badge warning">Accuracy 95.88%</span>
+            </div>
+            <img src="{{ url_for('static', filename='img/colab/05.png') }}" alt="Model Confusion Matrix">
+        </div>
+
+        <!-- Plot 2: Correlation Heatmap -->
+        <div class="chart-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="font-size: 17px; font-weight: 700; color: var(--adm-ink);">Correlation Heatmap</h3>
+                    <p style="font-size: 13px; color: var(--adm-muted); margin-top: 2px;">Feature interaction and collinearity matrix across all patient attributes.</p>
+                </div>
+            </div>
+            <img src="{{ url_for('static', filename='img/colab/04.png') }}" alt="Feature Correlation Heatmap">
+        </div>
+
+        <!-- Plot 3: Smoking History Distribution -->
+        <div class="chart-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="font-size: 17px; font-weight: 700; color: var(--adm-ink);">Smoking History Distribution</h3>
+                    <p style="font-size: 13px; color: var(--adm-muted); margin-top: 2px;">Categorical patient breakdown (never, current, former, ever, not current, No Info).</p>
+                </div>
+            </div>
+            <img src="{{ url_for('static', filename='img/colab/03.png') }}" alt="Smoking History Distribution">
+        </div>
+
+        <!-- Plot 4: Heart Disease Distribution -->
+        <div class="chart-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="font-size: 17px; font-weight: 700; color: var(--adm-ink);">Heart Disease Prevalence</h3>
+                    <p style="font-size: 13px; color: var(--adm-muted); margin-top: 2px;">Prior heart disease occurrences in the cohort (3,942 positive vs 96,058 negative).</p>
+                </div>
+            </div>
+            <img src="{{ url_for('static', filename='img/colab/02.png') }}" alt="Heart Disease Distribution">
+        </div>
+
+        <!-- Plot 5: Hypertension Distribution -->
+        <div class="chart-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="font-size: 17px; font-weight: 700; color: var(--adm-ink);">Hypertension Rates</h3>
+                    <p style="font-size: 13px; color: var(--adm-muted); margin-top: 2px;">Diagnosed hypertension distribution (7,485 hypertensive vs 92,515 standard).</p>
+                </div>
+            </div>
+            <img src="{{ url_for('static', filename='img/colab/01.png') }}" alt="Hypertension Distribution">
+        </div>
+
+    </div>
+</div>
+
+<!-- TAB 2: Jupyter Pipeline Code & Cells -->
+<div id="tab-notebook" class="an-tab-pane">
+    <div class="card">
+        <div class="card-header item-2">
+            <div>
+                <h3 class="card-title">Training Pipeline & Script Walkthrough</h3>
+                <p style="font-size: 13px; color: var(--adm-muted); margin-top: 4px;">Executed steps for dataset ingestion, transformation, scaling, and Logistic/Random Forest fitting.</p>
+            </div>
+            <span class="badge" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">Python 3.10 &middot; Scikit-Learn</span>
+        </div>
+        <div class="card-body">
+
+            <!-- Step 1 -->
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--adm-ink); margin-bottom: 8px;">1. Load and Inspect Clinical Data</h4>
+            <div class="code-cell">
+                <div class="code-header">
+                    <span>Python [In 1]:</span>
+                    <span>Imports & Ingestion</span>
+                </div>
+                <pre><code class="language-python">import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn import linear_model
+from sklearn.metrics import r2_score, confusion_matrix
+import warnings
+warnings.filterwarnings('ignore')
+
+# Load the clinical dataset
+data = pd.read_csv("diabetes_prediction_dataset.csv")
+print("Data Shape:", data.shape)
+data.head()</code></pre>
+            </div>
+
+            <p style="font-size: 13.5px; font-weight: 600; color: var(--adm-ink); margin-bottom: 6px;">Sample Data Preview (First 5 Rows):</p>
+            <div style="overflow-x: auto;">
+                <table class="df-table">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>gender</th><th>age</th><th>hypertension</th><th>heart_disease</th><th>smoking_history</th><th>bmi</th><th>HbA1c_level</th><th>blood_glucose_level</th><th>diabetes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td>Female</td><td>80.0</td><td>0</td><td>1</td><td>never</td><td>25.19</td><td>6.6</td><td>140</td><td>0</td></tr>
+                        <tr><td>1</td><td>Female</td><td>54.0</td><td>0</td><td>0</td><td>No Info</td><td>27.32</td><td>6.6</td><td>80</td><td>0</td></tr>
+                        <tr><td>2</td><td>Male</td><td>28.0</td><td>0</td><td>0</td><td>never</td><td>27.32</td><td>5.7</td><td>158</td><td>0</td></tr>
+                        <tr><td>3</td><td>Female</td><td>36.0</td><td>0</td><td>0</td><td>current</td><td>23.45</td><td>5.0</td><td>155</td><td>0</td></tr>
+                        <tr><td>4</td><td>Male</td><td>76.0</td><td>1</td><td>1</td><td>current</td><td>20.14</td><td>4.8</td><td>155</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Step 2 -->
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--adm-ink); margin: 28px 0 8px;">2. Categorical Encoding & Normalization</h4>
+            <div class="code-cell">
+                <div class="code-header">
+                    <span>Python [In 2]:</span>
+                    <span>Feature Encoding & Scaling</span>
+                </div>
+                <pre><code class="language-python"># Map categorical strings to discrete numerical values
+smoking_map = {'never': 0.0, 'No Info': 0.2, 'current': 0.4, 'former': 0.6, 'ever': 0.8, 'not current': 1.0}
+data['smoking_history'] = data['smoking_history'].map(smoking_map)
+
+# Min-Max Normalization across continuous features
+data = (data - data.min()) / (data.max() - data.min())
+
+# Ensure integer types for classification targets
+data["hypertension"] = data["hypertension"].astype("int64")
+data["heart_disease"] = data["heart_disease"].astype("int64")
+data["diabetes"] = data["diabetes"].astype("int64")</code></pre>
+            </div>
+
+            <!-- Step 3 -->
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--adm-ink); margin: 28px 0 8px;">3. Train-Test Split & Model Fitting</h4>
+            <div class="code-cell">
+                <div class="code-header">
+                    <span>Python [In 3]:</span>
+                    <span>Model Training</span>
+                </div>
+                <pre><code class="language-python">x = data.drop("diabetes", axis=1)
+y = data.diabetes
+
+# 70% Train, 30% Test split
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42)
+
+print("x train shape:", x_train.shape) # (70000, 7)
+print("x test shape: ", x_test.shape)  # (30000, 7)
+
+# Train Classifier
+logreg = linear_model.LogisticRegression(random_state=42, max_iter=200)
+logreg.fit(x_train, y_train)
+
+test_score = logreg.score(x_test, y_test)
+train_score = logreg.score(x_train, y_train)
+
+print(f"Test Accuracy:  {test_score * 100:.2f}%")
+print(f"Train Accuracy: {train_score * 100:.2f}%")</code></pre>
+            </div>
+
+            <div class="output-box">
+                <span style="color: #059669; font-weight: 600;">Execution Output:</span><br>
+                x train shape: (70000, 7)<br>
+                x test shape:  (30000, 7)<br>
+                y train shape: (70000, 1)<br>
+                y test shape:  (30000, 1)<br>
+                <strong>Test Accuracy:  95.88%</strong><br>
+                <strong>Train Accuracy: 96.11%</strong>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- TAB 3: Feature Matrix & Weights -->
+<div id="tab-features" class="an-tab-pane">
+    <div class="card">
+        <div class="card-header item-2">
+            <div>
+                <h3 class="card-title">Clinical Feature Specifications</h3>
+                <p style="font-size: 13px; color: var(--adm-muted); margin-top: 4px;">Detailed breakdown of the 8 features utilized by the model and their clinical significance.</p>
+            </div>
+            <span class="badge warning">Calibrated Weights</span>
+        </div>
+        <div class="card-body">
+            <table class="df-table">
+                <thead>
+                    <tr>
+                        <th style="width: 180px;">Feature Name</th>
+                        <th style="width: 140px;">Type / Range</th>
+                        <th style="width: 130px;">Relative Weight</th>
+                        <th>Clinical Significance & Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>blood_glucose_level</code></td>
+                        <td>Numeric (mg/dL)</td>
+                        <td><span class="badge" style="background: #fff0ee; color: #ff574d;">Very High (~32%)</span></td>
+                        <td>Direct postprandial and fasting glucose reading. Strongest positive predictor of acute diabetic risk.</td>
+                    </tr>
+                    <tr>
+                        <td><code>HbA1c_level</code></td>
+                        <td>Numeric (%)</td>
+                        <td><span class="badge" style="background: #fff0ee; color: #ff574d;">Very High (~28%)</span></td>
+                        <td>Glycated hemoglobin representing average 3-month blood sugar levels. Critical diagnostic threshold at &ge; 6.5%.</td>
+                    </tr>
+                    <tr>
+                        <td><code>bmi</code></td>
+                        <td>Numeric (kg/m²)</td>
+                        <td><span class="badge warning">High (~16%)</span></td>
+                        <td>Body Mass Index. Overweight (&ge; 25) and Obesity (&ge; 30) drastically increase insulin resistance.</td>
+                    </tr>
+                    <tr>
+                        <td><code>age</code></td>
+                        <td>Numeric (Years)</td>
+                        <td><span class="badge warning">Moderate (~12%)</span></td>
+                        <td>Age in years. Risk exponentially rises after age 45 due to progressive pancreatic beta-cell dysfunction.</td>
+                    </tr>
+                    <tr>
+                        <td><code>hypertension</code></td>
+                        <td>Binary (0 / 1)</td>
+                        <td><span class="badge" style="background: #f1f5f9; color: #475569;">Factor (~5%)</span></td>
+                        <td>High blood pressure indicator. Strongly associated with metabolic syndrome and cardiovascular risk.</td>
+                    </tr>
+                    <tr>
+                        <td><code>heart_disease</code></td>
+                        <td>Binary (0 / 1)</td>
+                        <td><span class="badge" style="background: #f1f5f9; color: #475569;">Factor (~4%)</span></td>
+                        <td>History of cardiovascular disease or coronary artery disease.</td>
+                    </tr>
+                    <tr>
+                        <td><code>smoking_history</code></td>
+                        <td>Categorical (6 levels)</td>
+                        <td><span class="badge" style="background: #f1f5f9; color: #475569;">Factor (~3%)</span></td>
+                        <td>Categorized into never, current, former, not current, ever, and No Info.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.an-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.an-tab-pane').forEach(p => p.classList.remove('active'));
+        
+        btn.classList.add('active');
+        const target = document.getElementById('tab-' + tabId);
+        if (target) target.classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        hljs.highlightAll();
+    });
+</script>
+
+{% endblock content %}

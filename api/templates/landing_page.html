@@ -1,0 +1,374 @@
+{% extends 'layouts/landing_page_base.html' %}
+{% block title %}
+    <title>HealthPulse | Check your diabetes and heart disease risk</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+{% endblock title %}
+{% block content %}
+
+<div class="lp">
+
+    <!-- ===== Navbar ===== -->
+    <nav class="lp-nav" id="lpNav">
+        <div class="lp-wrap">
+            <a href="/" class="lp-logo"><i class='bx bx-shield-plus'></i>Health<span>Pulse</span></a>
+            <button class="lp-toggle" id="lpToggle" aria-label="Open menu" aria-expanded="false" aria-controls="lpMenu">
+                <i class='bx bx-menu'></i>
+            </button>
+            <div class="lp-menu" id="lpMenu">
+                <a href="#home">Home</a>
+                <a href="#how">How it works</a>
+                <a href="#faq">FAQ</a>
+                <a href="https://github.com/therituraj/HealthPulse" target="_blank"><i class='bx bxl-github'></i> Github</a>
+                <a href="{{ url_for('login') }}">Sign in</a>
+                <a href="{{ url_for('register') }}" class="lp-btn primary">Get started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== Hero ===== -->
+    <header class="lp-hero" id="home">
+        <div class="lp-wrap lp-hero-grid">
+            <div>
+                <h1>AI-Powered Predictions for Diabetes & Heart Disease</h1>
+                <p class="lead">HealthPulse uses machine learning models trained on clinical datasets to estimate your risk from a few health measurements. It is free, instant and private.</p>
+                <div class="lp-hero-actions">
+                    <a href="{{ url_for('register') }}" class="lp-btn primary">Start free assessment</a>
+                    <a href="#how" class="lp-btn outline">See how it works</a>
+                </div>
+                <div class="lp-hero-stats">
+                    <div><strong>82%</strong><span>Diabetes model accuracy</span></div>
+                    <div><strong>79%</strong><span>Heart disease model accuracy</span></div>
+                </div>
+            </div>
+
+            <div class="lp-hero-visual">
+                <div class="lp-hero-photo">
+                    <img src="{{ url_for('static', filename='img/hero-img.png') }}" alt="A person reviewing a health report on the HealthPulse dashboard">
+                </div>
+                <div class="lp-float a">
+                    <span class="ico"><i class='bx bxs-heart'></i></span>
+                    <div><strong>Heart check</strong><small>Result in seconds</small></div>
+                </div>
+                <div class="lp-float b">
+                    <span class="ico"><i class='bx bx-check-shield'></i></span>
+                    <div><strong>Diabetes check</strong><small>Free for every user</small></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== Tech strip ===== -->
+    <div class="lp-tech">
+        <div class="lp-wrap">
+            <p>Built with</p>
+            <ul>
+                <li><img src="{{ url_for('static', filename='img/tech/colab.png') }}" alt="Google Colab"></li>
+                <li><img src="{{ url_for('static', filename='img/tech/flask.webp') }}" alt="Flask"></li>
+                <li><img src="{{ url_for('static', filename='img/tech/python.png') }}" alt="Python"></li>
+                <li><img src="{{ url_for('static', filename='img/tech/MongoDB.png') }}" alt="MongoDB"></li>
+                <li><img src="{{ url_for('static', filename='img/tech/chart js.png') }}" alt="Chart.js"></li>
+            </ul>
+        </div>
+    </div>
+
+    <main>
+
+        <!-- ===== Predictors ===== -->
+        <section class="lp-section tint" id="predictors">
+            <div class="lp-wrap">
+                <div class="lp-head center">
+                    <h2>Two health checks, one account</h2>
+                    <p>Pick the assessment you need. Each one has its own model, trained and tested separately.</p>
+                </div>
+
+                <div class="lp-predict">
+                    <article class="lp-pcard">
+                        <div class="top">
+                            <svg viewBox="0 0 64 64" aria-hidden="true">
+                                <circle cx="32" cy="32" r="32" fill="#fff0ee"/>
+                                <path d="M32 12c-7 10-12 16-12 23a12 12 0 0 0 24 0c0-7-5-13-12-23z" fill="#ff574d"/>
+                                <path d="M26 36a6 6 0 0 0 5 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                            </svg>
+                            <h3>Diabetes prediction</h3>
+                        </div>
+                        <p>Enter values such as glucose, blood pressure, BMI and age to see whether your profile points to a higher risk of diabetes.</p>
+                        <ul>
+                            <li><i class='bx bxs-badge-check'></i>Trained with Scikit-Learn on a labelled patient dataset</li>
+                            <li><i class='bx bxs-badge-check'></i>Clear result with your input values saved to your history</li>
+                        </ul>
+                        <div class="acc">
+                            <div><b>82%</b> <span>accuracy on the test set</span></div>
+                            <a href="{{ url_for('register') }}" class="lp-btn primary">Check diabetes risk</a>
+                        </div>
+                    </article>
+
+                    <article class="lp-pcard">
+                        <div class="top">
+                            <svg viewBox="0 0 64 64" aria-hidden="true">
+                                <circle cx="32" cy="32" r="32" fill="#fff0ee"/>
+                                <path d="M32 50S14 39 14 26a9 9 0 0 1 18-3 9 9 0 0 1 18 3c0 13-18 24-18 24z" fill="#ff574d"/>
+                                <path d="M18 31h9l3-6 4 11 3-5h9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                            <h3>Heart disease prediction</h3>
+                        </div>
+                        <p>Share details like age, cholesterol, resting blood pressure and chest pain type to estimate your likelihood of heart disease.</p>
+                        <ul>
+                            <li><i class='bx bxs-badge-check'></i>Separate model tuned for cardiac risk factors</li>
+                            <li><i class='bx bxs-badge-check'></i>Charts on your dashboard show how results change over time</li>
+                        </ul>
+                        <div class="acc">
+                            <div><b>79%</b> <span>accuracy on the test set</span></div>
+                            <a href="{{ url_for('register') }}" class="lp-btn primary">Check heart risk</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== How it works ===== -->
+        <section class="lp-section" id="how">
+            <div class="lp-wrap">
+                <div class="lp-head">
+                    <h2>Three steps to your result</h2>
+                    <p>No lab visit and no paperwork. Keep your latest health report nearby and you are ready.</p>
+                </div>
+
+                <div class="lp-step">
+                    <div>
+                        <span class="lp-step-num">1</span>
+                        <h3>Create a free account</h3>
+                        <p>Sign up with your email in a few seconds. Your profile keeps every assessment in one place so you can compare results later.</p>
+                    </div>
+                    <div class="lp-step-art">
+                        <svg viewBox="0 0 400 260" role="img" aria-label="Illustration of a sign-up form">
+                            <rect x="90" y="20" width="220" height="220" rx="14" fill="#fff" stroke="#ffd0cb" stroke-width="2"/>
+                            <circle cx="200" cy="70" r="26" fill="#ff574d"/>
+                            <circle cx="200" cy="63" r="9" fill="#fff"/>
+                            <path d="M184 86a16 14 0 0 1 32 0z" fill="#fff"/>
+                            <rect x="120" y="112" width="160" height="26" rx="6" fill="#f3eeed"/>
+                            <rect x="120" y="148" width="160" height="26" rx="6" fill="#f3eeed"/>
+                            <rect x="120" y="188" width="160" height="30" rx="8" fill="#ff574d"/>
+                            <rect x="168" y="199" width="64" height="8" rx="4" fill="#fff"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="lp-step flip">
+                    <div>
+                        <span class="lp-step-num">2</span>
+                        <h3>Enter your health details</h3>
+                        <p>Fill in a short form with measurements such as glucose level, blood pressure, cholesterol and BMI. Each field explains what it means.</p>
+                    </div>
+                    <div class="lp-step-art">
+                        <svg viewBox="0 0 400 260" role="img" aria-label="Illustration of a health data form with measurements">
+                            <rect x="50" y="24" width="300" height="212" rx="14" fill="#fff" stroke="#ffd0cb" stroke-width="2"/>
+                            <rect x="74" y="48" width="90" height="10" rx="5" fill="#d9d3d1"/>
+                            <rect x="74" y="66" width="252" height="28" rx="6" fill="#f3eeed"/>
+                            <rect x="74" y="66" width="150" height="28" rx="6" fill="#ffc9c4"/>
+                            <rect x="74" y="108" width="90" height="10" rx="5" fill="#d9d3d1"/>
+                            <rect x="74" y="126" width="252" height="28" rx="6" fill="#f3eeed"/>
+                            <rect x="74" y="126" width="190" height="28" rx="6" fill="#ffc9c4"/>
+                            <rect x="74" y="168" width="90" height="10" rx="5" fill="#d9d3d1"/>
+                            <rect x="74" y="186" width="252" height="28" rx="6" fill="#f3eeed"/>
+                            <rect x="74" y="186" width="110" height="28" rx="6" fill="#ffc9c4"/>
+                            <circle cx="324" cy="40" r="4" fill="#ff574d"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="lp-step">
+                    <div>
+                        <span class="lp-step-num">3</span>
+                        <h3>Get your prediction instantly</h3>
+                        <p>The model returns a result in real time, shown on your dashboard with charts. Save it, track it, and share it with your doctor.</p>
+                    </div>
+                    <div class="lp-step-art">
+                        <svg viewBox="0 0 400 260" role="img" aria-label="Illustration of a dashboard with a result gauge and chart">
+                            <rect x="40" y="20" width="320" height="220" rx="14" fill="#fff" stroke="#ffd0cb" stroke-width="2"/>
+                            <path d="M96 150a52 52 0 0 1 104 0" fill="none" stroke="#f3eeed" stroke-width="16" stroke-linecap="round"/>
+                            <path d="M96 150a52 52 0 0 1 80-44" fill="none" stroke="#ff574d" stroke-width="16" stroke-linecap="round"/>
+                            <rect x="124" y="140" width="48" height="12" rx="6" fill="#d9d3d1"/>
+                            <rect x="228" y="60" width="104" height="10" rx="5" fill="#d9d3d1"/>
+                            <rect x="228" y="82" width="70" height="10" rx="5" fill="#ececec"/>
+                            <rect x="70" y="186" width="24" height="34" rx="4" fill="#ffc9c4"/>
+                            <rect x="108" y="170" width="24" height="50" rx="4" fill="#ff574d"/>
+                            <rect x="146" y="178" width="24" height="42" rx="4" fill="#ffc9c4"/>
+                            <rect x="184" y="156" width="24" height="64" rx="4" fill="#ff574d"/>
+                            <path d="M228 206l24-22 24 10 28-34 28 18" fill="none" stroke="#2e9e5b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Model results ===== -->
+        <section class="lp-section lp-results" id="results">
+            <div class="lp-wrap lp-results-grid">
+                <div>
+                    <div class="lp-head" style="margin-bottom:0">
+                        <h2>Tested on data the models had never seen</h2>
+                        <p>Both models were trained with Python and Scikit-Learn, then scored on a held-out test dataset. These are the accuracies we measured.</p>
+                    </div>
+                    <div class="lp-facts">
+                        <div><strong>Python + Scikit-Learn</strong><small>Model training and evaluation</small></div>
+                        <div><strong>Flask + MongoDB</strong><small>Backend and user data storage</small></div>
+                    </div>
+                </div>
+                <div class="lp-bars">
+                    <div class="lp-bar-row">
+                        <div class="lbl"><span>Diabetes prediction</span><b>82%</b></div>
+                        <div class="lp-bar" role="img" aria-label="Diabetes model accuracy 82 percent"><i style="width:82%"></i></div>
+                    </div>
+                    <div class="lp-bar-row">
+                        <div class="lbl"><span>Heart disease prediction</span><b>79%</b></div>
+                        <div class="lp-bar" role="img" aria-label="Heart disease model accuracy 79 percent"><i style="width:79%"></i></div>
+                    </div>
+                    <p style="font-size:13px">Accuracy shows how often a model's prediction matched the test labels. It is not a guarantee for any single person.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Features ===== -->
+        <section class="lp-section tint" id="features">
+            <div class="lp-wrap">
+                <div class="lp-head center">
+                    <h2>Everything you need to understand your numbers</h2>
+                    <p>HealthPulse is more than a one-time calculator. It gives you tools to follow your health over time.</p>
+                </div>
+                <div class="lp-features">
+                    <div class="lp-feature">
+                        <i class='bx bx-bolt-circle'></i>
+                        <h3>Real-time predictions</h3>
+                        <p>Submit your details and see the result immediately, with no waiting and no email back and forth.</p>
+                    </div>
+                    <div class="lp-feature">
+                        <i class='bx bx-bar-chart-alt-2'></i>
+                        <h3>Interactive dashboard</h3>
+                        <p>Charts built with Chart.js show your past assessments so you can spot changes at a glance.</p>
+                    </div>
+                    <div class="lp-feature">
+                        <i class='bx bx-user-circle'></i>
+                        <h3>Personal profile</h3>
+                        <p>Keep your profile and history together. Update your details whenever your measurements change.</p>
+                    </div>
+                    <div class="lp-feature">
+                        <i class='bx bx-data'></i>
+                        <h3>Saved in MongoDB</h3>
+                        <p>Your assessments are stored securely in your account so you can come back to them any time.</p>
+                    </div>
+                    <div class="lp-feature">
+                        <i class='bx bx-devices'></i>
+                        <h3>Works on any screen</h3>
+                        <p>Use HealthPulse on your phone at the clinic or on a laptop at home. The layout adapts to both.</p>
+                    </div>
+                    <div class="lp-feature">
+                        <i class='bx bx-gift'></i>
+                        <h3>Free to use</h3>
+                        <p>There are no fees and no premium tier. Register once and run as many assessments as you need.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CTA ===== -->
+        <section class="lp-cta" id="cta">
+            <div class="lp-wrap">
+                <h2>Know your risk today, talk to your doctor tomorrow</h2>
+                <p>Early awareness helps you act sooner. Create your free account and run your first assessment now.</p>
+                <div class="lp-cta-actions">
+                    <a href="{{ url_for('register') }}" class="lp-btn primary">Create free account</a>
+                    <a href="{{ url_for('login') }}" class="lp-btn outline">Sign in</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== About ===== -->
+        <section class="lp-section" id="about">
+            <div class="lp-wrap lp-about">
+                <div class="lp-about-img">
+                    <img src="{{ url_for('static', filename='img/bg.jpg') }}" alt="Healthcare background used on the HealthPulse project">
+                </div>
+                <div>
+                    <h2>About the HealthPulse project</h2>
+                    <p>HealthPulse is a machine learning project that predicts diabetes and heart disease. It combines trained models, a Flask backend and a live dashboard in one web app.</p>
+                    <ul>
+                        <li><i class='bx bxs-check-circle'></i>Built ML models for diabetes and heart disease prediction using Python and Scikit-Learn.</li>
+                        <li><i class='bx bxs-check-circle'></i>Reached 82% accuracy for diabetes and 79% for heart disease on the test dataset.</li>
+                        <li><i class='bx bxs-check-circle'></i>Designed a Flask-based backend with MongoDB integration.</li>
+                        <li><i class='bx bxs-check-circle'></i>Deployed an interactive dashboard for real-time predictions.</li>
+                    </ul>
+                    <div style="margin-top:28px">
+                        <a href="https://github.com/therituraj/HealthPulse" target="_blank" rel="noopener" class="lp-btn outline"><i class='bx bxl-github'></i>View on GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section class="lp-section tint" id="faq">
+            <div class="lp-wrap">
+                <div class="lp-head center">
+                    <h2>Questions people ask before they start</h2>
+                </div>
+                <div class="lp-faq">
+                    <details>
+                        <summary>Is HealthPulse a medical diagnosis?<i class='bx bx-plus'></i></summary>
+                        <p>No. It gives a risk estimate from a machine learning model. Only a doctor can diagnose a condition, so please discuss your result with one.</p>
+                    </details>
+                    <details>
+                        <summary>How accurate are the predictions?<i class='bx bx-plus'></i></summary>
+                        <p>On our test dataset the diabetes model reached 82% accuracy and the heart disease model reached 79%. Real-world results can differ for individuals.</p>
+                    </details>
+                    <details>
+                        <summary>What information do I need to enter?<i class='bx bx-plus'></i></summary>
+                        <p>Common clinical measurements such as age, blood pressure, glucose, cholesterol and BMI. Each form field explains what to enter.</p>
+                    </details>
+                    <details>
+                        <summary>Does it cost anything?<i class='bx bx-plus'></i></summary>
+                        <p>No. HealthPulse is free. You only need an account to save and view your results.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer class="lp-footer">
+        <div class="lp-wrap">
+            <div class="lp-footer-grid">
+                <div>
+                    <a href="/" class="lp-logo"><i class='bx bx-shield-plus'></i>Health<span>Pulse</span></a>
+                    <p>Free, instant diabetes and heart disease risk assessments powered by machine learning.</p>
+                </div>
+                <div>
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="#predictors">Predictors</a></li>
+                        <li><a href="#how">How it works</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Account</h4>
+                    <ul>
+                        <li><a href="{{ url_for('login') }}">Sign in</a></li>
+                        <li><a href="{{ url_for('register') }}">Get started</a></li>
+                        <li><a href="https://github.com/therituraj/HealthPulse" target="_blank">Github</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="lp-disclaimer" style="max-width:none;margin:0">HealthPulse provides risk estimates for information only. It does not replace professional medical advice, diagnosis or treatment.</p>
+            <div class="lp-bottom">
+                <span>Made in 2023</span>
+                <span>Created by ❤ <a href="http://therituraj.in" target="_blank">Rituraj</a></span>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#home" title="Back to top" aria-label="Back to top" class="lp-top"><i class='bx bx-up-arrow-alt'></i></a>
+</div>
+
+{% endblock content %}

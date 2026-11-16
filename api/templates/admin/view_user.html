@@ -1,0 +1,82 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+    <title>User Profile: {{ users.name }} | HealthPulse Admin</title>
+{% endblock title %}
+{% block content %}
+
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('user_detail') }}" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--adm-muted); text-decoration: none;">
+        <i class='bx bx-arrow-back'></i> Back to User Directory
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header item-2">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 56px; height: 56px; border-radius: 50%; background: #fff0ee; color: #ff574d; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; border: 2px solid rgba(255,87,77,0.25);">
+                {{ (users.name or '?')[:1]|upper }}
+            </div>
+            <div>
+                <h3 class="card-title" style="font-size: 20px; margin-bottom: 2px;">{{ users.name }}</h3>
+                <span style="font-size: 13px; color: var(--adm-muted);">{{ users.email }}</span>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="{{ url_for('edit_user', user_id=users._id) }}" class="btn" style="padding: 8px 16px; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;">
+                <i class='bx bxs-edit'></i> Edit Profile
+            </a>
+            <a href="{{ url_for('change_password_user', user_id=users._id) }}" class="btn" style="padding: 8px 16px; font-size: 13.5px; background: #f1f5f9; color: var(--adm-ink); border: 1px solid #cbd5e1; display: inline-flex; align-items: center; gap: 6px;">
+                <i class='bx bx-lock-alt'></i> Reset Password
+            </a>
+            <a href="{{ url_for('delete_user', user_id=users._id) }}" class="btn danger" style="padding: 8px 16px; font-size: 13.5px; background: #fff0ee; color: #ff574d; border: 1px solid rgba(255,87,77,0.3); display: inline-flex; align-items: center; gap: 6px;">
+                <i class='bx bx-trash'></i> Delete
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="profile_table">
+            <tbody>
+                <tr>
+                    <td style="width: 200px; font-weight: 600; color: #475569;">Unique ID (UUID)</td>
+                    <td><code style="background: #f8fafc; padding: 4px 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 13px;">{{ users.uuid | default('N/A') }}</code></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">Full Name</td>
+                    <td>{{ users.name | default('N/A') }}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">Email Address</td>
+                    <td>{{ users.email | default('N/A') }}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">Account Role</td>
+                    <td>
+                        {% if users.role == 'admin' %}
+                            <span class="badge" style="background: #fff0ee; color: #ff574d; border: 1px solid rgba(255,87,77,0.25);">Administrator</span>
+                        {% else %}
+                            <span class="badge" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">Standard User</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">Date of Birth</td>
+                    <td>{{ users.dob | default('Not provided') }}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">Address</td>
+                    <td>{{ users.address | default('Not provided') }}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">Mobile Number</td>
+                    <td>{{ users.mobile_no | default('Not provided') }}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">Member Since</td>
+                    <td>{{ users.created_At | default('N/A') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}

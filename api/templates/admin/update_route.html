@@ -1,0 +1,55 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+    <title>Rename Route | HealthPulse Admin</title>
+{% endblock title %}
+{% block content %}
+
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('settings') }}" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--adm-muted); text-decoration: none;">
+        <i class='bx bx-arrow-back'></i> Back to Route Settings
+    </a>
+</div>
+
+<div class="card" style="max-width: 640px; margin: 0 auto;">
+    <div class="card-header">
+        <h3 class="card-title">Rename Existing Route</h3>
+        <p style="font-size: 13px; color: var(--adm-muted); margin-top: 4px;">Update an existing route's registered identifier in the database.</p>
+    </div>
+    <div class="card-body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert_box">
+            {% for category,message in messages %}
+            <div class="alert alert-{{category}}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('update_route') }}" method="post">
+            <div class="form_body">
+                <div class="form_group">
+                    <label for="select_route">Select Route to Update</label>
+                    <select name="select_route" id="select_route" required>
+                        <option value="">-- Choose a registered route --</option>
+                        {% for data in global_data %}
+                            <option value="{{ data.route_name }}">{{ data.route_name }} ({{ 'Active' if data.is_enabled else 'Inactive' }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form_group">
+                    <label for="route_name">New Route Name</label>
+                    <input type="text" class="input_box" id="route_name" name="route_name" placeholder="Enter updated route identifier" required>
+                </div>
+            </div>
+
+            <div class="form_footer">   
+                <a href="{{ url_for('settings') }}" class="btn btn-outline" style="text-decoration: none;">Cancel</a>
+                <button type="submit" class="btn">Save Changes</button>                        
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

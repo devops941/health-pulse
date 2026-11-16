@@ -1,0 +1,48 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+    <title>Delete User | HealthPulse Admin</title>
+{% endblock title %}
+{% block content %}
+
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('user_detail') }}" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--adm-muted); text-decoration: none;">
+        <i class='bx bx-arrow-back'></i> Back to User Directory
+    </a>
+</div>
+
+<div class="card" style="max-width: 600px; margin: 40px auto; border-color: rgba(255, 87, 77, 0.3); box-shadow: 0 10px 30px rgba(255, 87, 77, 0.08);">
+    <div class="card-body" style="text-align: center; padding: 40px 32px;">
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: #fff0ee; color: #ff574d; display: inline-flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 20px; border: 2px solid rgba(255, 87, 77, 0.2);">
+            <i class='bx bx-error-alt'></i>
+        </div>
+
+        <h3 style="font-size: 22px; font-weight: 700; color: var(--adm-ink); margin-bottom: 10px;">Delete User Account?</h3>
+        <p style="font-size: 14.5px; color: var(--adm-muted); line-height: 1.6; max-width: 480px; margin: 0 auto 24px;">
+            You are about to permanently delete the account for <strong>{{ users.name }}</strong> (<span style="color: var(--adm-ink);">{{ users.email }}</span>). All associated health reports and uploaded files will also be removed.
+        </p>
+
+        <div style="background: #f8fafc; border: 1px solid var(--adm-border); border-radius: 12px; padding: 16px; margin-bottom: 30px; text-align: left; font-size: 13.5px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span style="color: var(--adm-muted);">UUID:</span>
+                <code>{{ users.uuid }}</code>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span style="color: var(--adm-muted);">Role:</span>
+                <span style="font-weight: 600; text-transform: capitalize;">{{ users.role }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--adm-muted);">Joined:</span>
+                <span>{{ users.created_At }}</span>
+            </div>
+        </div>
+
+        <form action="{{ url_for('delete_user', user_id=users._id) }}" method="post" style="display: flex; gap: 12px; justify-content: center;">
+            <a href="{{ url_for('user_detail') }}" class="btn btn-outline" style="text-decoration: none; padding: 12px 24px; font-weight: 600;">Cancel</a>
+            <button type="submit" class="btn" style="background: #dc2626; color: #ffffff; padding: 12px 28px; font-weight: 600; box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35); border: none; border-radius: 10px; cursor: pointer;">
+                Permanently Delete User
+            </button>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,209 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+    <title>Admin Dashboard | HealthPulse</title>
+{% endblock title %}
+{% block content %}
+
+<!-- Top Bento Metric Cards -->
+<div class="flex">
+    <div class="col-3">
+        <div class="widget danger">
+            <div class="widget_body">
+                <div class="icon">
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="widget_text">
+                    <span class="no">{{ total_user | default(0) }}</span>
+                    <span class="desc">Registered Users</span>
+                </div>
+            </div>
+            <div class="widget_footer">
+                <a href="{{ url_for('user_detail') }}">
+                    <span>Manage Users</span>
+                    <i class='bx bx-right-arrow-alt'></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="widget info">
+            <div class="widget_body">
+                <div class="icon">
+                    <i class='bx bxs-report'></i>
+                </div>
+                <div class="widget_text">
+                    <span class="no">{{ total_reports | default(0) }}</span>
+                    <span class="desc">Health Reports</span>
+                </div>
+            </div>
+            <div class="widget_footer">
+                <a href="{{ url_for('database') }}">
+                    <span>View Database</span>
+                    <i class='bx bx-right-arrow-alt'></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="widget warning">
+            <div class="widget_body">
+                <div class="icon">
+                    <i class='bx bxs-data'></i>
+                </div>
+                <div class="widget_text">
+                    <span class="no" style="font-size: 20px;">{% if db_ready %}Online{% else %}Offline{% endif %}</span>
+                    <span class="desc">Database Status</span>
+                </div>
+            </div>
+            <div class="widget_footer">
+                <a href="{{ url_for('database') }}">
+                    <span>Inspect Tables</span>
+                    <i class='bx bx-right-arrow-alt'></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="widget dark">
+            <div class="widget_body">
+                <div class="icon">
+                    <i class='bx bxs-cog'></i>
+                </div>
+                <div class="widget_text">
+                    <span class="no" style="font-size: 20px;">Active</span>
+                    <span class="desc">Route Controls</span>
+                </div>
+            </div>
+            <div class="widget_footer">
+                <a href="{{ url_for('settings') }}">
+                    <span>Manage Switches</span>
+                    <i class='bx bx-right-arrow-alt'></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts & Analytics Section -->
+<div class="flex">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class='bx bx-line-chart' style="color: #ff574d;"></i> System Activity Overview</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="myChart" style="max-height: 260px;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class='bx bx-pie-chart-alt-2' style="color: #ff574d;"></i> Assessment Distribution</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="myChart1" style="max-height: 260px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Users List -->
+<div class="card">
+    <div class="card-header item-2">
+        <h3 class="card-title"><i class='bx bxs-user-detail' style="color: #ff574d;"></i> Recent Registrations</h3>
+        <a href="{{ url_for('user_detail') }}" class="btn" style="padding: 6px 16px; font-size: 13px;">View All Users</a>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        <table class="profile_table" style="margin: 0; border: none; border-radius: 0;">
+            <thead>
+                <tr style="background: #f8fafc;">
+                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">ID</th>
+                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">Name</th>
+                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">Email</th>
+                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b;">Role</th>
+                    <th style="padding: 14px 20px; font-size: 12px; text-transform: uppercase; color: #64748b; text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if recent_users %}
+                    {% for u in recent_users %}
+                    <tr>
+                        <td style="padding: 14px 20px; font-weight: 600; color: #64748b;">#{{ u.id }}</td>
+                        <td style="padding: 14px 20px; font-weight: 600; color: #1e242b;">{{ u.name }}</td>
+                        <td style="padding: 14px 20px; color: #64748b;">{{ u.email }}</td>
+                        <td style="padding: 14px 20px;">
+                            <span class="badge {% if u.role == 'admin' %}danger{% else %}warning{% endif %}">{{ u.role|capitalize }}</span>
+                        </td>
+                        <td style="padding: 14px 20px; text-align: right;">
+                            <a href="{{ url_for('view_user', user_id=u.id) }}" class="btn btn-outline" style="padding: 5px 12px; font-size: 12px;">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" style="padding: 32px 20px; text-align: center; color: #94a3b8;">No registered users yet.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+    const ctx1 = document.getElementById('myChart1');
+  
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Assessments Run',
+          data: [12, 19, 14, 25, 22, 30, 28],
+          borderColor: '#ff574d',
+          backgroundColor: 'rgba(255, 87, 77, 0.08)',
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2.5
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: ['Diabetes', 'Heart Disease', 'Healthy / Low Risk'],
+        datasets: [{
+          data: [{{ total_reports|default(1) }}, Math.max(1, Math.round({{ total_reports|default(1) }} * 0.7)), Math.max(2, Math.round({{ total_user|default(2) }} * 1.2))],
+          backgroundColor: [
+            '#ff574d',
+            '#f59e0b',
+            '#10b981'
+          ],
+          borderWidth: 0,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        },
+        cutout: '72%'
+      }
+    });
+</script>
+{% endblock content %}

@@ -1,0 +1,135 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+    <title>Database Explorer | HealthPulse Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+{% endblock title %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header item-2">
+        <div>
+            <h3 class="card-title">Database Explorer</h3>
+            <p style="font-size: 13px; color: var(--adm-muted); margin-top: 4px;">Inspect live records, schemas, and relational entities in real-time JSON format.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="badge" style="background: #ecfdf5; color: #047857; border: 1px solid rgba(16, 185, 129, 0.3);">
+                <i class='bx bxs-circle' style="font-size: 8px; margin-right: 5px;"></i> Connected
+            </span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="tab_group">
+            <div class="tab_item">
+                <h2>Tables & Models</h2>                
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    {% for collection_name in collection_names %}
+                        <a href="javascript:void(0)" onclick='load_data("{{ collection_name }}", this)' class="tab_button {% if loop.first %}active{% endif %}" id="tab_{{ collection_name }}">
+                            <i class='bx bxs-data' style="margin-right: 6px; font-size: 16px; vertical-align: middle;"></i>
+                            {{ collection_name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div style="display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px;">
+                    <div style="font-size: 13.5px; font-weight: 600; color: var(--adm-ink);" id="table_summary">
+                        Showing records for <span id="current_collection_name" style="color: #ff574d;">...</span>
+                    </div>
+                    <button id="copyJsonBtn" onclick="copyCurrentJson()" class="btn btn-outline" style="padding: 6px 14px; font-size: 12.5px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <i class='bx bx-copy'></i> Copy Records JSON
+                    </button>
+                </div>
+                
+                <div class="tab_content" id="tab_content" style="max-height: 600px; min-height: 380px; overflow-y: auto; background: #0d1117; border-radius: 12px; padding: 18px;">
+                    <div style="text-align: center; color: #8b949e; padding: 60px 20px;">
+                        <i class='bx bx-loader-alt bx-spin' style="font-size: 36px; color: #ff574d; margin-bottom: 12px;"></i>
+                        <div>Loading table records...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentRawData = [];
+
+    function load_data(collection_name, tabElement){
+        const buttons = document.querySelectorAll('.tab_button');
+        buttons.forEach(b => b.classList.remove('active'));
+        if (tabElement) tabElement.classList.add('active');
+
+        document.getElementById('current_collection_name').textContent = collection_name;
+        const container = document.getElementById('tab_content');
+        container.innerHTML = `
+            <div style="text-align: center; color: #8b949e; padding: 60px 20px;">
+                <i class='bx bx-loader-alt bx-spin' style="font-size: 36px; color: #ff574d; margin-bottom: 12px;"></i>
+                <div>Loading records for <strong>${collection_name}</strong>...</div>
+            </div>
+        `;
+
+        fetch(`/get_collection_data/${collection_name}`)
+            .then(res => {
+                if (!res.ok) throw new Error("HTTP error " + res.status);
+                return res.json();
+            })
+            .then(data => displayCollectionData(data, collection_name))
+            .catch(err => {
+                console.error("Error:", err);
+                container.innerHTML = `
+                    <div style="color: #f87171; text-align: center; padding: 40px;">
+                        <i class='bx bx-error' style="font-size: 36px; margin-bottom: 8px;"></i>
+                        <div>Unable to fetch data for ${collection_name}.</div>
+                    </div>
+                `;
+            });
+    }
+
+    function displayCollectionData(data, collection_name){
+        currentRawData = data;
+        const container = document.getElementById('tab_content');
+        const count = Array.isArray(data) ? data.length : 0;
+        document.getElementById('table_summary').innerHTML = `
+            Showing <strong>${count}</strong> record${count === 1 ? '' : 's'} in <span style="color: #ff574d; font-family: monospace;">${collection_name}</span>
+        `;
+
+        if (!data || data.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; color: #8b949e; padding: 60px 20px;">
+                    <i class='bx bx-folder-open' style="font-size: 40px; margin-bottom: 12px; color: #6e7681;"></i>
+                    <div>This table is currently empty (0 records).</div>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <pre style="margin: 0; padding: 0; background: transparent;"><code class="language-json" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.6;">${escapeHtml(JSON.stringify(data, null, 2))}</code></pre>
+        `;
+        hljs.highlightAll();
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function copyCurrentJson() {
+        if (!currentRawData || currentRawData.length === 0) return;
+        navigator.clipboard.writeText(JSON.stringify(currentRawData, null, 2)).then(() => {
+            const btn = document.getElementById('copyJsonBtn');
+            const old = btn.innerHTML;
+            btn.innerHTML = "<i class='bx bx-check'></i> Copied!";
+            setTimeout(() => { btn.innerHTML = old; }, 2000);
+        });
+    }
+
+    // Auto-load first collection on ready
+    document.addEventListener('DOMContentLoaded', () => {
+        const firstTab = document.querySelector('.tab_button');
+        if (firstTab) firstTab.click();
+    });
+</script>
+{% endblock content %}

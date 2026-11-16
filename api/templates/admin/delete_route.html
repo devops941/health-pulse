@@ -1,0 +1,59 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+    <title>Delete Route | HealthPulse Admin</title>
+{% endblock title %}
+{% block content %}
+
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('settings') }}" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--adm-muted); text-decoration: none;">
+        <i class='bx bx-arrow-back'></i> Back to Route Settings
+    </a>
+</div>
+
+<div class="card" style="max-width: 640px; margin: 0 auto; border-color: rgba(255, 87, 77, 0.3);">
+    <div class="card-header">
+        <h3 class="card-title">Delete Route</h3>
+        <p style="font-size: 13px; color: var(--adm-muted); margin-top: 4px;">Remove a route entry from system management controls.</p>
+    </div>
+    <div class="card-body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert_box">
+            {% for category,message in messages %}
+            <div class="alert alert-{{category}}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div style="background: #fff0ee; border: 1px solid rgba(255,87,77,0.25); border-radius: 12px; padding: 14px 18px; margin-bottom: 22px; display: flex; align-items: flex-start; gap: 12px;">
+            <i class='bx bx-error-circle' style="font-size: 24px; color: #ff574d; flex-shrink: 0; margin-top: 2px;"></i>
+            <div style="font-size: 13.5px; color: #7f1d1d; line-height: 1.5;">
+                <strong>Caution:</strong> Deleting a managed route removes its custom toggle state from the database. Unmanaged routes default to system settings.
+            </div>
+        </div>
+
+        <form action="{{ url_for('delete_route') }}" method="post">
+            <div class="form_body">
+                <div class="form_group">
+                    <label for="select_route">Select Route to Delete</label>
+                    <select name="select_route" id="select_route" required>
+                        <option value="">-- Choose a route to remove --</option>
+                        {% for data in global_data %}
+                            <option value="{{ data.route_name }}">{{ data.route_name }} ({{ 'Active' if data.is_enabled else 'Inactive' }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form_footer">   
+                <a href="{{ url_for('settings') }}" class="btn btn-outline" style="text-decoration: none;">Cancel</a>
+                <button type="submit" class="btn" style="background: #dc2626; color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);">
+                    Delete Route
+                </button>                        
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

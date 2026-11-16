@@ -1,0 +1,56 @@
+{% extends 'layouts/base.html' %}
+{% block title %}
+<title>Login</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+
+{% endblock title %}
+{% block content %}
+
+
+<main class="main">
+    <div class="main_wrapper">
+        <div class="form_box form_custom">
+
+            <h2 class="form_box_title">Welcome <span>Back</span></h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="alert_box">
+                {% for category,message in messages %}
+                <div class="alert alert-{{category}}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <form id="login-form" method="post" action="{{ url_for('login') }}">
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="input-text" placeholder="name@example.com" required autofocus>
+                    <i class='bx bx-envelope'></i>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="input-text" placeholder="Enter your password" required>
+                    <i class='bx bx-lock-alt'></i>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" class="checkbox" name="termServices" id="termServices">
+                    <label class="form-check-label" for="termServices" style="margin-bottom: 0;">
+                        Remember me
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn-form_submit" value="Sign In">
+                </div>
+
+            </form>
+            <p class="text_muted text-center">Don't have an account? <a href="{{ url_for('register') }}">Sign up</a></p>
+
+        </div>
+    </div>
+</main>
+{% endblock content %}

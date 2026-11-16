@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    {% block title %}{% endblock title %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+
+<body>
+
+    <header class="header">
+        <nav class="navbar">
+            <div class="menu_left">
+                <button class="toggle lg-hidden only_lg" id="menu_toggle" aria-label="Toggle navigation drawer">
+                    <i class="bx bx-menu"></i>
+                </button>
+                <div class="logo">
+                    <a href="{{ url_for('admin_dashboard') }}" class="logo_text">
+                        <span><i class='bx bx-shield-plus'></i></span>
+                        Health<span>Pulse</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="menu_right">
+                {% if admin %}
+                <div class="dropdown" data-dropdown="">
+                    <a class="dropdown_btn user__data" data-dropdown-button="" aria-label="Account Menu">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #fff0ee; color: #ff574d; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">
+                            <i class='bx bx-user'></i>
+                        </div>
+                        <div class="user__content sm-hidden">
+                            <p>{{ admin.name | default('Administrator') }}</p>
+                            <p>{{ admin.email | default('') }}</p>
+                        </div>
+                        <i class='bx bx-chevron-down' style="color: var(--adm-muted); font-size: 16px; margin-left: 2px;"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="{{ url_for('admin_dashboard') }}" class="dropdown_item">
+                            <i class='bx bxs-dashboard'></i> Dashboard
+                        </a>
+                        <a href="{{ url_for('user_detail') }}" class="dropdown_item">
+                            <i class='bx bxs-user-detail'></i> User Directory
+                        </a>
+                        <a href="{{ url_for('settings') }}" class="dropdown_item">
+                            <i class='bx bxs-cog'></i> Route Settings
+                        </a>
+                        <a href="{{ url_for('database') }}" class="dropdown_item">
+                            <i class='bx bxs-data'></i> Database Explorer
+                        </a>
+                        <a href="{{ url_for('logout') }}" class="dropdown_item logout">
+                            <i class='bx bx-log-out'></i> Logout
+                        </a>
+                    </div>
+                </div>
+                {% else %}            
+                    <a href="/login" class="btn btn-login sm-hidden">Login</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+        
+    <main class="main">
+        <aside id="menu">
+            <nav class="sidebar">
+                <ul class="sidebar_menu">
+                    <li>
+                        <a href="{{ url_for('admin_dashboard') }}" class="sidebar_link {{ 'active' if request.endpoint == 'admin_dashboard' }}">
+                            <span class="link_icon"><i class='bx bxs-dashboard'></i></span>
+                            <span class="link_name">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('user_detail') }}" class="sidebar_link {{ 'active' if request.endpoint in ['user_detail', 'view_user', 'add_user', 'edit_user', 'change_password_user', 'delete_user'] }}">
+                            <span class="link_icon"><i class='bx bxs-user-detail'></i></span>
+                            <span class="link_name">User Details</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('database') }}" class="sidebar_link {{ 'active' if request.endpoint == 'database' }}">
+                            <span class="link_icon"><i class='bx bxs-data'></i></span>
+                            <span class="link_name">Database Explorer</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('settings') }}" class="sidebar_link {{ 'active' if request.endpoint in ['settings', 'add_route', 'update_route', 'delete_route'] }}">
+                            <span class="link_icon"><i class='bx bxs-cog'></i></span>
+                            <span class="link_name">Route Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('analyse') }}" class="sidebar_link {{ 'active' if request.endpoint == 'analyse' }}">
+                            <span class="link_icon"><i class='bx bx-analyse'></i></span>
+                            <span class="link_name">Analyse</span>
+                        </a>
+                    </li>
+                    <li style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--adm-border);">
+                        <a href="{{ url_for('logout') }}" class="sidebar_link" style="color: #ef4444;">
+                            <span class="link_icon" style="color: #ef4444;"><i class='bx bx-log-out'></i></span>
+                            <span class="link_name">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <div class="main_wrapper">
+            {% block content %}{% endblock content %}
+        </div>
+    </main>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+    <title>Add New User | HealthPulse</title>
+{% endblock title %}
+{% block content %}
+
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <div class="card-header item-2">
+        <h3 class="card-title"><i class='bx bx-user-plus' style="color: #ff574d;"></i> Add New User</h3>
+        <a href="{{ url_for('user_detail') }}" class="btn btn-outline" style="padding: 6px 14px; font-size: 13px;">Back to Users</a>
+    </div>
+    <div class="card-body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert_box">
+            {% for category,message in messages %}
+            <div class="alert alert-{{category}}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="post" action="{{ url_for('add_user') }}">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" class="input_box" placeholder="e.g. Jane Doe" required>                    
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="input_box" placeholder="jane@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="input_box" placeholder="Strong password (at least 8 chars, 1 uppercase, 1 special)" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="input_box" placeholder="Re-enter password" required>
+            </div>
+            
+            <div class="form-group" style="margin-top: 28px;">
+                <input type="submit" class="btn" style="width: 100%; height: 46px;" value="Create User Account">
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

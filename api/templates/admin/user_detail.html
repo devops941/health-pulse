@@ -1,0 +1,117 @@
+{% extends 'layouts/base_admin.html' %}
+{% block title %}
+<title>User Directory | HealthPulse Admin</title>
+{% endblock title %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header item-2">
+        <div>
+            <h3 class="card-title">User Directory</h3>
+            <p style="font-size: 13px; color: var(--adm-muted); margin-top: 4px;">Manage registered accounts,
+                credentials, and access roles.</p>
+        </div>
+        <a href="{{ url_for('add_user')}}" class="btn">
+            <i class='bx bx-user-plus'></i> Add New User
+        </a>
+    </div>
+    <div class="card-body">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert_box" style="margin-bottom: 20px;">
+            {% for category,message in messages %}
+            <div class="alert alert-{{category}}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <table class="users_table" id="myTable">
+            <thead>
+                <tr>
+                    <th style="width: 70px;">S.No</th>
+                    <th>User</th>
+                    <th style="width: 120px;">Role</th>
+                    <th style="width: 150px;">Account ID</th>
+                    <th style="width: 100px; text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in user_data %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <div
+                                style="width: 40px; height: 40px; border-radius: 50%; background: #fff0ee; color: #ff574d; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; border: 1px solid rgba(255,87,77,0.25);">
+                                {{ (user.name or '?')[:1]|upper }}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--adm-ink); font-size: 14.5px;">{{ user.name }}
+                                </div>
+                                <div style="font-size: 12.5px; color: var(--adm-muted);">{{ user.email }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if user.role == 'admin' %}
+                        <span class="badge"
+                            style="background: #fff0ee; color: #ff574d; border: 1px solid rgba(255,87,77,0.25);">Admin</span>
+                        {% else %}
+                        <span class="badge"
+                            style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">User</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <code
+                            style="font-size: 12.5px; background: #f8fafc; padding: 4px 8px; border-radius: 6px; border: 1px solid #e2e8f0; color: #64748b;">{{ user.uuid or user.id }}</code>
+                    </td>
+                    <td style="text-align: right;">
+                        <div class="dropdown" data-dropdown="">
+                            <button class="dropdown_btn" data-dropdown-button="" aria-label="Actions"
+                                style="border: 1px solid var(--adm-border); background: #ffffff; width: 36px; height: 36px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: #475569; cursor: pointer; transition: all 0.15s ease;">
+                                <i class='bx bx-dots-horizontal-rounded' style="font-size: 20px;"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a href="{{ url_for('view_user', user_id=user._id) }}" class="dropdown_item">
+                                    <i class='bx bx-show-alt'></i> View Profile
+                                </a>
+                                <a href="{{ url_for('edit_user', user_id=user._id) }}" class="dropdown_item">
+                                    <i class='bx bxs-edit'></i> Edit User
+                                </a>
+                                <a href="{{ url_for('change_password_user', user_id=user._id) }}" class="dropdown_item">
+                                    <i class='bx bx-lock-alt'></i> Change Password
+                                </a>
+                                <a href="{{ url_for('delete_user', user_id=user._id) }}" class="dropdown_item logout">
+                                    <i class='bx bx-trash'></i> Delete User
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+<script>
+    const dataTable = new simpleDatatables.DataTable("#myTable", {
+        searchable: true,
+        fixedHeight: false,
+        perPage: 5,
+        perPageSelect: [5, 10, 20, 50],
+        nextPrev: true,
+        prevText: "‹ Prev",
+        nextText: "Next ›",
+        labels: {
+            placeholder: "Search users...",
+            perPage: "entries per page",
+            noRows: "No users found",
+            info: "Showing {start} to {end} of {rows} entries",
+        }
+    });
+</script>
+{% endblock content %}

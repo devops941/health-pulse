@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% block title %}
-    <title>My Profile | HealthPulse</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<title>My Profile | HealthPulse</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 {% endblock title %}
 {% block content %}
 
@@ -9,17 +9,20 @@
     <div class="main_wrapper" style="padding: 30px 16px 60px;">
 
         <div class="profile_card">
-            <div class="box" style="background: linear-gradient(135deg, #1e242b 0%, #2e3846 50%, #ff574d 100%); position: relative;">                
+            <div class="box"
+                style="background: linear-gradient(135deg, #1e242b 0%, #2e3846 50%, #ff574d 100%); position: relative;">
                 <div class="circle">
                     {% if profile_data and profile_data.image_files and profile_data.image_files|length > 0 %}
-                        {% set first_image = profile_data.image_files[0] %}
-                        <img class="profile-image" id="userImage" src="{{ url_for('fetch', file_id=first_image.file_id) }}" alt="{{ profile_data.name }}">
+                    {% set first_image = profile_data.image_files[0] %}
+                    <img class="profile-image" id="userImage" src="{{ url_for('fetch', file_id=first_image.file_id) }}"
+                        alt="{{ profile_data.name }}">
                     {% else %}
-                        <div style="width: 100%; height: 100%; border-radius: 50%; background: #fff0ee; color: #ff574d; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700;">
-                            {{ (profile_data.name or user.name or '?')[:1]|upper }}
-                        </div>
+                    <div
+                        style="width: 100%; height: 100%; border-radius: 50%; background: #fff0ee; color: #ff574d; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700;">
+                        {{ (profile_data.name or user.name or '?')[:1]|upper }}
+                    </div>
                     {% endif %}
-                    
+
                     <a href="{{ url_for('upload_file') }}" title="Change Profile Picture" class="profile_pic_btn">
                         <i class='bx bx-camera'></i>
                     </a>
@@ -34,7 +37,7 @@
                 {% endif %}
 
                 <h1 class="profile_title">Profile Information</h1>
-                
+
                 {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                 <div class="alert_box" style="margin-bottom: 20px;">
@@ -49,7 +52,9 @@
                     <tbody>
                         <tr>
                             <td style="width: 220px; font-weight: 600; color: #475569;">Unique Account ID</td>
-                            <td><code style="background: #f8fafc; padding: 4px 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 13px;">{{ profile_data.uuid if profile_data else 'N/A' }}</code></td>
+                            <td><code
+                                    style="background: #f8fafc; padding: 4px 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 13px;">{{ profile_data.uuid if profile_data else 'N/A' }}</code>
+                            </td>
                         </tr>
                         <tr>
                             <td style="font-weight: 600; color: #475569;">Full Name</td>
@@ -65,11 +70,13 @@
                         </tr>
                         <tr>
                             <td style="font-weight: 600; color: #475569;">Residential Address</td>
-                            <td>{{ profile_data.address if profile_data and profile_data.address else 'Not provided' }}</td>
+                            <td>{{ profile_data.address if profile_data and profile_data.address else 'Not provided' }}
+                            </td>
                         </tr>
                         <tr>
                             <td style="font-weight: 600; color: #475569;">Mobile Number</td>
-                            <td>{{ profile_data.mobile_no if profile_data and profile_data.mobile_no else 'Not provided' }}</td>
+                            <td>{{ profile_data.mobile_no if profile_data and profile_data.mobile_no else 'Not provided'
+                                }}</td>
                         </tr>
                         <tr>
                             <td style="font-weight: 600; color: #475569;">Member Since</td>
@@ -79,13 +86,16 @@
                 </table>
 
                 <div style="display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap;">
-                    <a href="{{ url_for('my_reports') }}" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-size: 14px; text-decoration: none; color: #334155; border: 1px solid var(--hp-border);">
+                    <a href="{{ url_for('my_reports') }}" class="btn btn-outline"
+                        style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-size: 14px; text-decoration: none; color: #334155; border: 1px solid var(--hp-border);">
                         <i class='bx bx-file'></i> View My Reports
                     </a>
-                    <a href="{{ url_for('change_password') }}" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-size: 14px; text-decoration: none; color: #334155; border: 1px solid var(--hp-border);">
+                    <a href="{{ url_for('change_password') }}" class="btn btn-outline"
+                        style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-size: 14px; text-decoration: none; color: #334155; border: 1px solid var(--hp-border);">
                         <i class='bx bx-lock-alt'></i> Change Password
                     </a>
-                    <a href="{{ url_for('new_report') }}" class="btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 10px; font-size: 14px; text-decoration: none;">
+                    <a href="{{ url_for('new_report') }}" class="btn"
+                        style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 10px; font-size: 14px; text-decoration: none;">
                         <i class='bx bx-plus-circle'></i> New Health Check
                     </a>
                 </div>

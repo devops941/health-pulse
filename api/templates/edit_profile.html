@@ -1,73 +1,99 @@
 {% extends 'layouts/base.html' %}
 {% block title %}
-    <title>Edit Profile | HealthPulse</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    {% endblock title %}
+<title>Edit Profile | HealthPulse</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock title %}
 {% block content %}
 
-    
 <main class="main">
-    <div class="main_wrapper">
+    <div class="main_wrapper" style="padding: 30px 16px 60px;">
 
         <div class="profile_card">
-            <div class="box" style="--cover_img:url('https://img.freepik.com/free-photo/glowing-lines-human-heart-3d-shape-dark-background-generative-ai_191095-1435.jpg'); ">                
+            <div class="box"
+                style="background: linear-gradient(135deg, #1e242b 0%, #2e3846 50%, #ff574d 100%); position: relative;">
                 <div class="circle">
-                    <img src="{{ url_for('static', filename='img/avatar.png') }}" alt="profile image">
-                    <a href="" title="Change Profile Picture" class="profile_pic_btn">
-                        <i class='bx bx-edit'></i>
+                    {% if profile_data and profile_data.image_files and profile_data.image_files|length > 0 %}
+                    {% set first_image = profile_data.image_files[0] %}
+                    <img class="profile-image" id="userImage" src="{{ url_for('fetch', file_id=first_image.file_id) }}"
+                        alt="{{ profile_data.name }}">
+                    {% else %}
+                    <div
+                        style="width: 100%; height: 100%; border-radius: 50%; background: #fff0ee; color: #ff574d; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700;">
+                        {{ (profile_data.name or user.name or '?')[:1]|upper }}
+                    </div>
+                    {% endif %}
+
+                    <a href="{{ url_for('upload_file') }}" title="Change Profile Picture" class="profile_pic_btn">
+                        <i class='bx bx-camera'></i>
                     </a>
                 </div>
-                
             </div>
+
             <div class="box">
-                <a href="/my_profile" class="edit_profile">View profile</a>
-                
+                <a href="{{ url_for('my_profile') }}" class="edit_profile"
+                    style="background: #f1f5f9; color: #1e242b; border: 1px solid #cbd5e1; box-shadow: none;">
+                    <i class='bx bx-arrow-back'></i> View Profile
+                </a>
+
                 <form action="" method="post">
                     <div class="form_header">
-                        <h1 class="profile_title">Edit Profile</h1>
+                        <h1 class="profile_title">Edit Profile Information</h1>
+                        <p style="font-size: 14px; color: #64748b; margin-top: -16px; margin-bottom: 24px;">Update your
+                            personal details below.</p>
                     </div>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div class="alert_box" style="margin-bottom: 20px;">
+                        {% for category,message in messages %}
+                        <div class="alert alert-{{category}}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+
                     <div class="form_body">
-                        
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div class="alert_box">
-                {% for category,message in messages %}
-                <div class="alert alert-{{category}}">{{ message }}</div>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
-                    <div class="form_group">
-                        <label for="uuid">UUID</label>
-                        <input type="text" class="input_box" name="uuid" readonly value="{{ profile_data.uuid | default('N/A') }}" placeholder="Enter UUID">
+                        <div class="form_group">
+                            <label for="uuid">Account UUID</label>
+                            <input type="text" class="input_box" name="uuid" readonly
+                                value="{{ profile_data.uuid | default('N/A') }}" placeholder="Account UUID">
+                        </div>
+                        <div class="form_group">
+                            <label for="name">Full Name</label>
+                            <input type="text" class="input_box" id="name" name="name"
+                                value="{{ profile_data.name | default('') }}" placeholder="Enter full name" required>
+                        </div>
+                        <div class="form_group">
+                            <label for="email">Email Address</label>
+                            <input type="email" class="input_box" id="email" name="email"
+                                value="{{ profile_data.email | default('') }}" placeholder="Enter email address"
+                                required>
+                        </div>
+                        <div class="form_group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" class="input_box" id="dob" name="dob"
+                                value="{{ profile_data.dob | default('') }}">
+                        </div>
+                        <div class="form_group">
+                            <label for="address">Residential Address</label>
+                            <input type="text" class="input_box" id="address" name="address"
+                                value="{{ profile_data.address | default('') }}" placeholder="Enter street and city">
+                        </div>
+                        <div class="form_group">
+                            <label for="mobile_no">Mobile Phone</label>
+                            <input type="text" class="input_box" id="mobile_no" name="mobile_no"
+                                value="{{ profile_data.mobile_no | default('') }}" placeholder="Enter contact number">
+                        </div>
                     </div>
-                    <div class="form_group">
-                        <label for="name">Name</label>
-                        <input type="text" class="input_box" name="name" value="{{ profile_data.name | default('N/A') }}" placeholder="Enter name">
-                    </div>
-                    <div class="form_group">
-                        <label for="email">Email</label>
-                        <input type="email" class="input_box" name="email" value="{{ profile_data.email | default('N/A') }}" placeholder="Enter email">
-                    </div>
-                    <div class="form_group">
-                        <label for="dob">DOB</label>
-                        <input type="date" class="input_box" name="dob" value="{{ profile_data.dob | default('01/01/2000') }}" placeholder="Enter DOB">
-                    </div>
-                    <div class="form_group">
-                        <label for="address">Address</label>
-                        <input type="text" class="input_box" name="address" value="{{ profile_data.address | default('N/A') }}" placeholder="Enter address">
-                    </div>                     
-                    <div class="form_group">
-                        <label for="mobile_no">Mobile No</label>
-                        <input type="text" class="input_box" name="mobile_no" value="{{ profile_data.mobile_no | default('N/A') }}" placeholder="Enter Mobile No">
-                    </div>
-                </div>
-                    <div class="form_footer" style="display: flex; gap: 12px; margin-top: 24px;">   
-                            <a href="{{ url_for('my_profile') }}" class="btn btn-outline">Cancel</a>
-                            <input type="submit" class="btn" value="Save Changes">                        
+
+                    <div class="form_footer"
+                        style="display: flex; gap: 12px; margin-top: 28px; justify-content: flex-end;">
+                        <a href="{{ url_for('my_profile') }}" class="btn btn-outline"
+                            style="text-decoration: none; padding: 10px 22px; border: 1px solid var(--hp-border); border-radius: 10px; color: #475569; font-weight: 600;">Cancel</a>
+                        <button type="submit" class="btn"
+                            style="padding: 10px 24px; border-radius: 10px; font-weight: 600;">Save Changes</button>
                     </div>
                 </form>
-            
             </div>
         </div>
     </div>
